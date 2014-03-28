@@ -71,7 +71,8 @@ namespace KinectWallboard
 
             if (!debugMode)
             {
-                tableLayoutPanel.ColumnCount = 1;
+                tableLayoutPanel.ColumnCount = 1;                
+                tableLayoutPanel.Controls.Remove(panel1);
             }
 
             _jqueryUrl = ConfigurationManager.AppSettings["JQueryUrl"];
