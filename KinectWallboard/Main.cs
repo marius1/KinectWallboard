@@ -58,10 +58,16 @@ namespace KinectWallboard
 
         private Direction _skipDirection = Direction.None;
 
-        public Main(bool debugMode)
+        public Main(bool debugMode, bool startFullscreen)
         {
             _debugMode = debugMode;
             InitializeComponent();
+
+            if (startFullscreen)
+            {
+                FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Maximized;
+            }
 
             if (!debugMode)
             {
@@ -73,7 +79,11 @@ namespace KinectWallboard
             LoadWebPageConfig();
 
             var fileSystemWatch = new FileSystemWatcher(Path.GetDirectoryName(Application.ExecutablePath), "*" + _configFilename + "*");
-            fileSystemWatch.Changed += (sender, args) => LoadWebPageConfig();
+            fileSystemWatch.Changed += (sender, args) =>
+                {
+                    if (args.ChangeType == WatcherChangeTypes.Changed)
+                        LoadWebPageConfig();
+                };
             fileSystemWatch.EnableRaisingEvents = true;
             
             //**** setup Chrome
@@ -147,7 +157,7 @@ namespace KinectWallboard
 
         private void OpenNotification(string message, int duration)
         {
-            if (_notificationThread != null && lblNotification.Text == message)
+            if (_notificationThread != null && _notificationThread.ThreadState != ThreadState.Stopped && lblNotification.Text == message)
                 return;
 
             if (_notificationThread != null)
@@ -156,12 +166,25 @@ namespace KinectWallboard
                 _notificationThread = null;
             }
 
-            pnlNotification.Visible = true;
-            pnlNotification.Left = (ClientSize.Width/2) - (pnlNotification.Width/2);
-            pnlNotification.Top = ClientSize.Height - pnlNotification.Height;
-            pnlNotification.BringToFront();
-
-            lblNotification.Text = message;
+            if (IsHandleCreated)
+            {
+                Invoke((MethodInvoker) delegate
+                    {
+                        pnlNotification.Visible = true;
+                        pnlNotification.Left = (ClientSize.Width/2) - (pnlNotification.Width/2);
+                        pnlNotification.Top = ClientSize.Height - pnlNotification.Height;
+                        pnlNotification.BringToFront();
+                        lblNotification.Text = message;
+                    });
+            }
+            else
+            {
+                pnlNotification.Visible = true;
+                pnlNotification.Left = (ClientSize.Width / 2) - (pnlNotification.Width / 2);
+                pnlNotification.Top = ClientSize.Height - pnlNotification.Height;
+                pnlNotification.BringToFront();
+                lblNotification.Text = message;
+            }
 
             _notificationThread = new Thread(delegate()
                 {
@@ -201,7 +224,6 @@ namespace KinectWallboard
 
                         OpenNotification("New config loaded", 2000);
                     }
-
                 }
             }
             catch (Exception e)

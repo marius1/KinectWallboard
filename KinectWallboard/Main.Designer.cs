@@ -240,6 +240,7 @@
             this.ClientSize = new System.Drawing.Size(1382, 613);
             this.Controls.Add(this.pnlNotification);
             this.Controls.Add(this.tableLayoutPanel);
+            this.KeyPreview = true;
             this.Name = "Main";
             this.Text = "KinectWallboard";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
