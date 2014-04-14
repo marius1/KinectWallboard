@@ -15,8 +15,17 @@ namespace KinectWallboard
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            bool debugMode = args.Length > 0 && args[0] == "/debug";
-            bool noFullscreen = args.Length > 1 && args[1] == "/nofullscreen";
+            bool debugMode = false;
+            bool noFullscreen = false;
+
+            foreach (string arg in args)
+            {
+                if (arg == "/debug")
+                    debugMode = true;
+
+                if (arg == "/nofullscreen")
+                    noFullscreen = true;
+            }
 
             Application.Run(new Main(debugMode, !noFullscreen));
         }

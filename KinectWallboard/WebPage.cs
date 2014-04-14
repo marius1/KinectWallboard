@@ -11,6 +11,7 @@ namespace KinectWallboard
 
         public string JavaScript { get; set; }
         public bool InjectJQuery { get; set; }
+        public bool AllowUpdates { get; set; }
         public int Timeout { get; set; }
 
         public string Username { get; set; }

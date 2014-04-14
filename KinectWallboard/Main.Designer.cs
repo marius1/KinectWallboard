@@ -30,6 +30,7 @@
         {
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.txtConsole = new System.Windows.Forms.TextBox();
             this.btnNext = new System.Windows.Forms.Button();
             this.btnPrevious = new System.Windows.Forms.Button();
             this.lblNextPageTimer = new System.Windows.Forms.Label();
@@ -54,8 +55,8 @@
             // tableLayoutPanel
             // 
             this.tableLayoutPanel.ColumnCount = 2;
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 350F));
             this.tableLayoutPanel.Controls.Add(this.panel1, 1, 0);
             this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
@@ -68,6 +69,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.txtConsole);
             this.panel1.Controls.Add(this.btnNext);
             this.panel1.Controls.Add(this.btnPrevious);
             this.panel1.Controls.Add(this.lblNextPageTimer);
@@ -82,10 +84,22 @@
             this.panel1.Controls.Add(this.txtAddress);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(970, 3);
+            this.panel1.Location = new System.Drawing.Point(1035, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(409, 607);
+            this.panel1.Size = new System.Drawing.Size(344, 607);
             this.panel1.TabIndex = 0;
+            // 
+            // txtConsole
+            // 
+            this.txtConsole.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtConsole.Location = new System.Drawing.Point(6, 118);
+            this.txtConsole.Multiline = true;
+            this.txtConsole.Name = "txtConsole";
+            this.txtConsole.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtConsole.Size = new System.Drawing.Size(329, 148);
+            this.txtConsole.TabIndex = 13;
             // 
             // btnNext
             // 
@@ -119,6 +133,7 @@
             // 
             // label4
             // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.Location = new System.Drawing.Point(3, 324);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(84, 31);
@@ -128,6 +143,7 @@
             // 
             // lblNumSkeletons
             // 
+            this.lblNumSkeletons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblNumSkeletons.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNumSkeletons.Location = new System.Drawing.Point(6, 269);
             this.lblNumSkeletons.Name = "lblNumSkeletons";
@@ -138,6 +154,7 @@
             // 
             // lblGestureSkeletonState
             // 
+            this.lblGestureSkeletonState.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblGestureSkeletonState.AutoSize = true;
             this.lblGestureSkeletonState.Location = new System.Drawing.Point(171, 285);
             this.lblGestureSkeletonState.Name = "lblGestureSkeletonState";
@@ -147,6 +164,7 @@
             // 
             // lblKinectStatus
             // 
+            this.lblKinectStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblKinectStatus.AutoSize = true;
             this.lblKinectStatus.Location = new System.Drawing.Point(170, 269);
             this.lblKinectStatus.Name = "lblKinectStatus";
@@ -156,6 +174,7 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(93, 269);
             this.label3.Name = "label3";
@@ -165,12 +184,10 @@
             // 
             // pictureBox
             // 
-            this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pictureBox.Location = new System.Drawing.Point(6, 358);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(400, 240);
+            this.pictureBox.Size = new System.Drawing.Size(320, 240);
             this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox.TabIndex = 4;
             this.pictureBox.TabStop = false;
@@ -200,7 +217,7 @@
             this.txtAddress.Enabled = false;
             this.txtAddress.Location = new System.Drawing.Point(74, 9);
             this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(332, 20);
+            this.txtAddress.Size = new System.Drawing.Size(267, 20);
             this.txtAddress.TabIndex = 1;
             // 
             // label1
@@ -272,6 +289,7 @@
         private System.Windows.Forms.Button btnPrevious;
         private System.Windows.Forms.Panel pnlNotification;
         private System.Windows.Forms.Label lblNotification;
+        private System.Windows.Forms.TextBox txtConsole;
 
     }
 }

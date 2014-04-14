@@ -34,6 +34,7 @@ namespace KinectWallboard
         private GestureController _gestureController = new GestureController();
         private string _configFilename = "WebPageConfig.xml";
 
+        private UpdateData _updateData;
         private Thread _loopThread;
 
         private string _injectJQuery = 
@@ -45,14 +46,6 @@ namespace KinectWallboard
                 "script.onload = function() {{ $=jQuery; {1} }}; " +
                 "d.getElementsByTagName('head')[0].appendChild(script); " +
             "}}(document));";
-
-
-        // https://jira.funda.nl/secure/RapidBoard.jspa?rapidView=37&view=reporting&chart=burndownChart&sprint=470
-        // https://bamboo.funda.nl/telemetry.action?filter=project&projectKey=PROJECTC
-        // https://bamboo.funda.nl/telemetry.action?filter=project&projectKey=INT
-        // http://fundango.nl/media/burnupGraph/?env=Productie
-        // http://fundango.nl/media/burnupGraph/?env=ProjectC
-        // http://fundango.nl/dsp/dspGraph/?env=Productie
 
         private List<WebPage> _addressList;
 
@@ -67,6 +60,7 @@ namespace KinectWallboard
             {
                 FormBorderStyle = FormBorderStyle.None;
                 WindowState = FormWindowState.Maximized;
+                Cursor.Position = new Point(0, 0);
             }
 
             if (!debugMode)
@@ -78,19 +72,22 @@ namespace KinectWallboard
             _jqueryUrl = ConfigurationManager.AppSettings["JQueryUrl"];
 
             LoadWebPageConfig();
+            var path = Path.GetDirectoryName(Application.ExecutablePath);
+            if (path != null)
+            {
+                var fileSystemWatch = new FileSystemWatcher(path, "*" + _configFilename + "*");
+                fileSystemWatch.Changed += (sender, args) =>
+                    {
+                        if (args.ChangeType == WatcherChangeTypes.Changed)
+                            LoadWebPageConfig();
+                    };
+                fileSystemWatch.EnableRaisingEvents = true;
+            }
 
-            var fileSystemWatch = new FileSystemWatcher(Path.GetDirectoryName(Application.ExecutablePath), "*" + _configFilename + "*");
-            fileSystemWatch.Changed += (sender, args) =>
-                {
-                    if (args.ChangeType == WatcherChangeTypes.Changed)
-                        LoadWebPageConfig();
-                };
-            fileSystemWatch.EnableRaisingEvents = true;
-            
             //**** setup Chrome
-            var settings = new CefSharp.Settings()
+            /*var settings = new CefSharp.Settings()
                 {
-                    
+                    CachePath = @".\cache"
                 };
             
             if (!CEF.Initialize(settings))
@@ -98,13 +95,20 @@ namespace KinectWallboard
             
             webView = new WebView()
             {
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0)
             };
 
             webView.PropertyChanged += WebViewPropertyChanged;
             webView.LoadCompleted += WebViewLoadCompleted;
+            if (debugMode)
+            {
+                webView.ConsoleMessage += WebViewOnConsoleMessage;
+            }
 
-            tableLayoutPanel.Controls.Add(webView, 0, 0);            
+            tableLayoutPanel.Controls.Add(webView, 0, 0);     
+       
+            _updateData = new UpdateData();
 
             //**** setup kinect
             foreach (var kinectSensor in KinectSensor.KinectSensors)
@@ -151,7 +155,15 @@ namespace KinectWallboard
                 {
                     _kinectSensor = null;
                 }
-            }
+            }*/
+        }
+
+        private void WebViewOnConsoleMessage(object sender, ConsoleMessageEventArgs consoleMessageEventArgs)
+        {
+            Invoke((MethodInvoker) delegate
+                {
+                    txtConsole.AppendText(consoleMessageEventArgs.Message + Environment.NewLine);
+                });
         }
 
         private Thread _notificationThread;
@@ -264,6 +276,11 @@ namespace KinectWallboard
                     else
                     {
                         webView.ExecuteScript(_currentWebPage.JavaScript);
+                    }
+
+                    if (_currentWebPage.AllowUpdates)
+                    {
+                        webView.ExecuteScript(String.Format("updateData({0});", _updateData.NumberOfSkeletons));
                     }
                 }
 
@@ -487,6 +504,17 @@ namespace KinectWallboard
                 _skipDirection = Direction.None;
             }
 
+            int numberOfSkeletons = skeletons.Count(s => s.TrackingState == SkeletonTrackingState.Tracked || s.TrackingState == SkeletonTrackingState.PositionOnly);
+
+            if (_updateData.NumberOfSkeletons != numberOfSkeletons)
+            {
+                _updateData.NumberOfSkeletons = numberOfSkeletons;
+                if (_currentWebPage.AllowUpdates)
+                {
+                    webView.ExecuteScript(String.Format("updateData({0});", _updateData.NumberOfSkeletons));
+                }
+            }
+
             if (IsHandleCreated)
             {
                 var message = (closestSkeleton == null) ? "No gesture skeleton" : "Found gesture skeleton";
@@ -494,11 +522,7 @@ namespace KinectWallboard
                 Invoke((MethodInvoker) delegate
                     {
                         lblGestureSkeletonState.Text = message;
-                    });
-
-                Invoke((MethodInvoker) delegate
-                    {
-                        lblNumSkeletons.Text = skeletons.Count(s => s.TrackingState == SkeletonTrackingState.Tracked || s.TrackingState == SkeletonTrackingState.PositionOnly).ToString();
+                        lblNumSkeletons.Text = _updateData.NumberOfSkeletons.ToString();
                     });
             }
         }
@@ -518,6 +542,13 @@ namespace KinectWallboard
 
             if (_kinectSensor != null)
                 _kinectSensor.Stop();
+
+            if (_debugMode && webView != null)
+            {
+                webView.ConsoleMessage -= WebViewOnConsoleMessage;
+            }
+
+            CEF.Shutdown();
         }
 
         private void btnNext_Click(object sender, EventArgs e)
@@ -533,6 +564,11 @@ namespace KinectWallboard
         }
     }
 
+    public class UpdateData
+    {
+        public int NumberOfSkeletons { get; set; }
+    }
+
     public enum Direction
     {
         None,
@@ -540,7 +576,7 @@ namespace KinectWallboard
         Hold,
         Next
     }
-
+    
     public class RoundRobinPosition
     {
         private int _position = -1;
