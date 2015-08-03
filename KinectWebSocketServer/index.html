@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        var WebSocket = window.WebSocket || window.MozWebSocket;
+        window.URL = window.URL || window.webkitURL;
+
+        var ws = new WebSocket('ws://localhost:8181');
+
+        ws.onopen = function () {
+            $('#incomming').append("Open");
+        };
+
+        ws.onmessage = function (evt) {
+
+            $('#image').empty();
+
+            var img = document.createElement('img');
+            img.onload = function(e) {
+                window.URL.revokeObjectURL(img.src); // Clean up after yourself.
+            };
+            img.src = window.URL.createObjectURL(evt.data);
+            $('#image').append(img);
+
+            //$('#image img').attr('src', 'data:image/png;base64,' + evt.data);
+        };
+
+        ws.onclose = function (data) {
+            $('#incomming').append("Closed");
+        };
+    </script>
+</head>
+<body>
+    <div id="image">
+        
+    </div>
+    <div id="incomming"></div>
+</body>
+</html>

@@ -82,7 +82,6 @@
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="Gesture.cs" />
     <Compile Include="WebPage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -153,6 +152,7 @@
     <None Include="CefSharp\locales\vi.pak" />
     <None Include="CefSharp\locales\zh-CN.pak" />
     <None Include="CefSharp\locales\zh-TW.pak" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -201,6 +201,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KinectWallboard.Gesture\KinectWallboard.Gesture.csproj">
+      <Project>{ccf2ef79-12bb-4ed0-b046-0aef2df6a92c}</Project>
+      <Name>KinectWallboard.Gesture</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

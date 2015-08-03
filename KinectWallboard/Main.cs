@@ -15,6 +15,8 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Kinect;
 using System.Linq;
+using KinectWallboard.Gesture;
+using KinectWallboard.Gesture.Gestures;
 
 namespace KinectWallboard
 {
@@ -85,7 +87,7 @@ namespace KinectWallboard
             }
 
             //**** setup Chrome
-            /*var settings = new CefSharp.Settings()
+            var settings = new CefSharp.Settings()
                 {
                     CachePath = @".\cache"
                 };
@@ -155,7 +157,7 @@ namespace KinectWallboard
                 {
                     _kinectSensor = null;
                 }
-            }*/
+            }
         }
 
         private void WebViewOnConsoleMessage(object sender, ConsoleMessageEventArgs consoleMessageEventArgs)
